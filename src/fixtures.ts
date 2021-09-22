@@ -10,14 +10,20 @@ import {promises as fs} from 'fs';
 
 import {attachmentName} from './data';
 
+export interface PlaywrightCoverageOptions {
+  collectCoverage: boolean;
+}
+
 const coverageFixtures: Fixtures<
-  {},
+  PlaywrightCoverageOptions,
   {},
   PlaywrightTestArgs & PlaywrightTestOptions,
   PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = {
-  page: async ({page}, use, testInfo) => {
-    if (page.coverage == null) {
+  collectCoverage: true,
+
+  page: async ({page, collectCoverage}, use, testInfo) => {
+    if (page.coverage == null || !collectCoverage) {
       return use(page);
     }
 
@@ -43,6 +49,6 @@ const coverageFixtures: Fixtures<
 export function mixinFixtures<
   T extends PlaywrightTestArgs & PlaywrightTestOptions,
   W extends PlaywrightWorkerArgs & PlaywrightWorkerOptions,
->(base: TestType<T, W>): TestType<T, W> {
+>(base: TestType<T, W>): TestType<T & PlaywrightCoverageOptions, W> {
   return base.extend(coverageFixtures);
 }
