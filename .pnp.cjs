@@ -43,6 +43,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/micromatch", "npm:4.0.2"],
             ["@types/node", "npm:16.9.3"],
             ["@types/node-fetch", "npm:2.5.12"],
+            ["comlink", "npm:4.3.1"],
             ["istanbul-lib-coverage", "npm:3.0.0"],
             ["istanbul-lib-report", "npm:3.0.0"],
             ["istanbul-reports", "npm:3.0.2"],
@@ -992,6 +993,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/micromatch", "npm:4.0.2"],
             ["@types/node", "npm:16.9.3"],
             ["@types/node-fetch", "npm:2.5.12"],
+            ["comlink", "npm:4.3.1"],
             ["istanbul-lib-coverage", "npm:3.0.0"],
             ["istanbul-lib-report", "npm:3.0.0"],
             ["istanbul-reports", "npm:3.0.2"],
@@ -1380,6 +1382,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["combined-stream", "npm:1.0.8"],
             ["delayed-stream", "npm:1.0.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["comlink", [
+        ["npm:4.3.1", {
+          "packageLocation": "../../../.yarn/berry/cache/comlink-npm-4.3.1-45efe1dd36-8.zip/node_modules/comlink/",
+          "packageDependencies": [
+            ["comlink", "npm:4.3.1"]
           ],
           "linkType": "HARD",
         }]

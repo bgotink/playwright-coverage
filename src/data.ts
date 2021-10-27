@@ -1,4 +1,4 @@
-import {mergeProcessCovs, ProcessCov, ScriptCov} from '@bcoe/v8-coverage';
+import type {ProcessCov} from '@bcoe/v8-coverage';
 import type {Suite, TestResult} from '@playwright/test/reporter';
 import {promises as fs} from 'fs';
 import {createCoverageMap} from 'istanbul-lib-coverage';
@@ -6,7 +6,7 @@ import {isMatch} from 'micromatch';
 import fetch from 'node-fetch';
 import {posix} from 'path';
 import type {RawSourceMap} from 'source-map';
-import {fileURLToPath, pathToFileURL, URL} from 'url';
+import {pathToFileURL, URL} from 'url';
 import v8ToIstanbul from 'v8-to-istanbul';
 
 export const attachmentName = '@bgotink/playwright-coverage';
@@ -37,36 +37,27 @@ export function collectV8CoverageFiles(suite: Suite) {
   return files;
 }
 
-function isProcessCov(obj: unknown): obj is ProcessCov {
-  return (
-    typeof obj === 'object' &&
-    obj != null &&
-    Array.isArray((obj as ProcessCov).result)
-  );
-}
+export async function getSourceMap(
+  url: string,
+  source: string,
+): Promise<RawSourceMap | undefined> {
+  const match = source.match(/\/\/# *sourceMappingURL=(.*)$/);
 
-export async function loadAndMergeCoverages(files: Iterable<string>) {
-  let totalCoverage: ProcessCov = {result: []};
-  const sources = new Map<string, string>();
-
-  for (const file of files) {
-    const coverage: unknown = JSON.parse(await fs.readFile(file, 'utf-8'));
-
-    if (!isProcessCov(coverage)) {
-      continue;
-    }
-
-    for (const script of coverage.result as (ScriptCov & {source?: string})[]) {
-      if (typeof script.source === 'string') {
-        sources.set(script.url, script.source);
-        delete script.source;
-      }
-    }
-
-    totalCoverage = mergeProcessCovs([totalCoverage, coverage]);
+  if (match == null) {
+    return undefined;
   }
 
-  return {totalCoverage, sources};
+  const resolved = new URL(match[1]!, url);
+
+  if (resolved.protocol === 'file:') {
+    return JSON.parse(await fs.readFile(resolved, 'utf8'));
+  } else {
+    const response = await fetch(resolved.href, {
+      method: 'GET',
+    });
+
+    return await response.json();
+  }
 }
 
 export async function getSourceMaps(
@@ -74,28 +65,11 @@ export async function getSourceMaps(
 ): Promise<ReadonlyMap<string, RawSourceMap | undefined>> {
   return new Map<string, RawSourceMap | undefined>(
     await Promise.all(
-      Array.from(sources, async ([url, source]) => {
-        const match = source.match(/\/\/# *sourceMappingURL=(.*)$/);
-
-        if (match == null) {
-          return [url, undefined] as const;
-        }
-
-        const resolved = new URL(match[1]!, url);
-
-        if (resolved.protocol === 'file:') {
-          return [
-            url,
-            JSON.parse(await fs.readFile(fileURLToPath(resolved), 'utf8')),
-          ] as const;
-        } else {
-          const response = await fetch(resolved.href, {
-            method: 'GET',
-          });
-
-          return [url, await response.json()] as const;
-        }
-      }),
+      Array.from(
+        sources,
+        async ([url, source]) =>
+          [url, await getSourceMap(url, source)] as const,
+      ),
     ),
   );
 }

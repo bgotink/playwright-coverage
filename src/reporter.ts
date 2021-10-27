@@ -2,19 +2,18 @@ import type {
   FullConfig,
   FullResult,
   Reporter,
-  Suite,
+  TestResult,
 } from '@playwright/test/reporter';
+import {Remote, wrap} from 'comlink';
+import nodeEndpoint from 'comlink/dist/umd/node-adapter';
 import {readFileSync} from 'fs';
+import {createCoverageMap} from 'istanbul-lib-coverage';
 import {createContext, Watermarks} from 'istanbul-lib-report';
 import {create, ReportType, ReportOptions} from 'istanbul-reports';
 import path from 'path';
-
-import {
-  collectV8CoverageFiles,
-  convertToIstanbulCoverage,
-  getSourceMaps,
-  loadAndMergeCoverages,
-} from './data';
+import {Worker} from 'worker_threads';
+import {attachmentName} from './data';
+import type {CoverageWorker} from './worker';
 
 export class CoverageReporter implements Reporter {
   private readonly exclude: readonly string[];
@@ -26,8 +25,10 @@ export class CoverageReporter implements Reporter {
   private readonly sourceRoot?: string;
   private readonly watermarks?: Partial<Watermarks>;
 
+  private readonly workerInstance: Worker;
+  private readonly worker: Remote<CoverageWorker>;
+
   private config!: FullConfig;
-  private suite!: Suite;
 
   constructor({
     exclude,
@@ -50,11 +51,29 @@ export class CoverageReporter implements Reporter {
     this.reports = reports;
     this.sourceRoot = sourceRoot;
     this.watermarks = watermarks;
+
+    this.workerInstance = new Worker(require.resolve('./worker.js'));
+    this.worker = wrap<CoverageWorker>(nodeEndpoint(this.workerInstance));
   }
 
-  onBegin(config: FullConfig, suite: Suite): void {
+  onBegin(config: FullConfig): void {
     this.config = config;
-    this.suite = suite;
+
+    void this.worker.reset();
+  }
+
+  onTestEnd(_: unknown, result: TestResult): void {
+    const attachmentIndex = result.attachments.findIndex(
+      ({name}) => name === attachmentName,
+    );
+
+    if (attachmentIndex !== -1) {
+      const [attachment] = result.attachments.splice(attachmentIndex, 1);
+
+      if (attachment?.path != null) {
+        void this.worker.startConversion(attachment.path);
+      }
+    }
   }
 
   async onEnd(result: FullResult): Promise<void> {
@@ -62,24 +81,14 @@ export class CoverageReporter implements Reporter {
       return;
     }
 
-    const v8CoverageFiles = collectV8CoverageFiles(this.suite);
+    const sourceRoot = this.sourceRoot ?? this.config.rootDir;
 
-    const {totalCoverage: totalV8Coverage, sources} =
-      await loadAndMergeCoverages(v8CoverageFiles);
-    const sourceMaps = await getSourceMaps(sources);
-
-    const sourceRoot = path.resolve(this.sourceRoot ?? this.config.rootDir);
-
-    const istanbulCoverage = await convertToIstanbulCoverage(
-      totalV8Coverage,
-      sources,
-      sourceMaps,
-      this.exclude,
-      sourceRoot,
+    const coverage = createCoverageMap(
+      JSON.parse(await this.worker.getTotalCoverage(sourceRoot, this.exclude)),
     );
 
     const context = createContext({
-      coverageMap: istanbulCoverage,
+      coverageMap: coverage,
       dir: path.resolve(this.config.rootDir, this.resultDir),
       watermarks: this.watermarks,
 

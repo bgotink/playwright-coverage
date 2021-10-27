@@ -6,7 +6,8 @@
     "types": ["node"],
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    // "sourceMap": true,
+    "inlineSourceMap": true,
 
     "strict": true,
 
