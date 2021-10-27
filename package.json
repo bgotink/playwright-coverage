@@ -10,6 +10,9 @@
     "LICENSE.md",
     "README.md"
   ],
+  "scripts": {
+    "prepack": "rm -r lib && tsc"
+  },
   "packageManager": "yarn@3.0.2",
   "devDependencies": {
     "@playwright/test": "^1.14.1",
