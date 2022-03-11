@@ -3,7 +3,6 @@ import type {Suite, TestResult} from '@playwright/test/reporter';
 import {promises as fs} from 'fs';
 import {createCoverageMap} from 'istanbul-lib-coverage';
 import {isMatch} from 'micromatch';
-import fetch from 'node-fetch';
 import {posix} from 'path';
 import type {RawSourceMap} from 'source-map';
 import {pathToFileURL, URL} from 'url';
@@ -36,6 +35,10 @@ export function collectV8CoverageFiles(suite: Suite) {
 
   return files;
 }
+
+const fetch = eval('import("node-fetch")') as Promise<
+  typeof import('node-fetch')
+>;
 
 export async function getSourceMap(
   url: string,
@@ -70,11 +73,13 @@ export async function getSourceMap(
       return JSON.parse(dataString);
     }
     default: {
-      const response = await fetch(resolved.href, {
+      const response = await (
+        await fetch
+      ).default(resolved.href, {
         method: 'GET',
       });
 
-      return await response.json();
+      return (await response.json()) as RawSourceMap;
     }
   }
 }
