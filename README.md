@@ -76,6 +76,41 @@ This uses V8's builtin coverage tracking. The fixtures registered via `mixinFixt
 
 Upon completion of all tests, the reporter combines the generated coverage files into one and then converts the v8 coverage format into the format used by istanbul. This is then passed into the reports of `istanbul-reports`.
 
+## Common issues
+
+**The HTML report shows errors saying the source files couldn't be read**
+
+This means the reporter is looking in the wrong place because playwright and the server process are using paths relative to a different working folder.
+
+Try setting the `sourceRoot` folder. If you need more control over the actual path of the files, pass a `rewritePaths` property in the options:
+
+```ts
+{
+  sourceRoot: __dirname,
+
+  /**
+   * Modify the paths of files on which coverage is reported
+   *
+   * The input is an object with two properties:
+   * - absolutePath
+   * - relativePath
+   * both are strings and they represent the absoslute and relative
+   * path of the file as computed based on the source map.
+   *
+   * Return the rewritten path. If nothing is returned, `absolutePath`
+   * is used instead.
+   */
+  rewritePaths: ({absolutePath, relativePath}) => {
+    return absolutePath;
+  },
+}
+```
+
+**Coverage is empty**
+
+Did you perhaps use `@playwright/test`'s own `test` function?
+If you don't use a `test` function created using `mixinCoverage`, coverage won't be tracked and the reporter won't have anything to report on.
+
 ## Status
 
 This project is very experimental. It has been proven to work on one angular application, i.e. with webpack with the unmodified configuration angular applies to it.
