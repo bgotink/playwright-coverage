@@ -1,6 +1,6 @@
-import {CoverageReporter} from './reporter';
+import {CoverageReporter, CoverageReporterOptions} from './reporter';
 
 export {PlaywrightCoverageOptions, mixinFixtures} from './fixtures';
 
-export {CoverageReporter};
+export {CoverageReporter, CoverageReporterOptions};
 export default CoverageReporter;

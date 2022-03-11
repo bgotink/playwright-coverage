@@ -165,6 +165,7 @@ export async function convertToIstanbulCoverage(
           // ignore files outside of the root
           relativePath.startsWith('../') ||
           // ignore webpack files
+          path.includes('/webpack:/webpack/') ||
           relativePath === 'webpack/bootstrap' ||
           relativePath.startsWith('webpack/runtime/') ||
           // ignore dependencies
@@ -187,11 +188,12 @@ export async function convertToIstanbulCoverage(
         Array.from(
           Object.entries(convertor.toIstanbul()),
           ([path, coverage]) => {
+            path = sanitizePath(path);
             return [
-              sanitizePath(path),
+              path,
               {
                 ...coverage,
-                path: sanitizePath(path),
+                path,
               },
             ] as const;
           },

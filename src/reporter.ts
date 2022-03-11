@@ -7,13 +7,26 @@ import type {
 import {Remote, wrap} from 'comlink';
 import nodeEndpoint from 'comlink/dist/umd/node-adapter';
 import {readFileSync} from 'fs';
-import {createCoverageMap} from 'istanbul-lib-coverage';
+import {CoverageMapData, createCoverageMap} from 'istanbul-lib-coverage';
 import {createContext, Watermarks} from 'istanbul-lib-report';
 import {create, ReportType, ReportOptions} from 'istanbul-reports';
 import path from 'path';
 import {Worker} from 'worker_threads';
-import {attachmentName} from './data';
-import type {CoverageWorker} from './worker';
+
+import {attachmentName} from './data.js';
+import type {CoverageWorker} from './worker.js';
+
+export interface CoverageReporterOptions {
+  exclude?: string | string[];
+  sourceRoot?: string;
+  resultDir?: string;
+  reports?: (
+    | ReportType
+    | [ReportType, ReportOptions[ReportType] | undefined]
+  )[];
+  watermarks?: Partial<Watermarks>;
+  rewritePath?: (file: {relativePath: string; absolutePath: string}) => string;
+}
 
 export class CoverageReporter implements Reporter {
   private readonly exclude: readonly string[];
@@ -24,6 +37,7 @@ export class CoverageReporter implements Reporter {
   )[];
   private readonly sourceRoot?: string;
   private readonly watermarks?: Partial<Watermarks>;
+  private readonly rewritePath?: CoverageReporterOptions['rewritePath'];
 
   private readonly workerInstance: Worker;
   private readonly worker: Remote<CoverageWorker>;
@@ -36,21 +50,14 @@ export class CoverageReporter implements Reporter {
     resultDir,
     reports = ['text-summary'],
     watermarks,
-  }: {
-    exclude?: string | string[];
-    sourceRoot?: string;
-    resultDir?: string;
-    reports?: (
-      | ReportType
-      | [ReportType, ReportOptions[ReportType] | undefined]
-    )[];
-    watermarks?: Partial<Watermarks>;
-  } = {}) {
+    rewritePath,
+  }: CoverageReporterOptions = {}) {
     this.exclude = typeof exclude === 'string' ? [exclude] : exclude ?? [];
     this.resultDir = resultDir || 'coverage';
     this.reports = reports;
     this.sourceRoot = sourceRoot;
     this.watermarks = watermarks;
+    this.rewritePath = rewritePath;
 
     this.workerInstance = new Worker(require.resolve('./worker.js'));
     this.worker = wrap<CoverageWorker>(nodeEndpoint(this.workerInstance));
@@ -84,7 +91,19 @@ export class CoverageReporter implements Reporter {
     const sourceRoot = this.sourceRoot ?? this.config.rootDir;
 
     const coverage = createCoverageMap(
-      JSON.parse(await this.worker.getTotalCoverage(sourceRoot, this.exclude)),
+      Object.fromEntries(
+        Object.entries(
+          JSON.parse(
+            await this.worker.getTotalCoverage(sourceRoot, this.exclude),
+          ) as CoverageMapData,
+        ).map(([relativePath, data]) => {
+          const absolutePath = path.resolve(sourceRoot, relativePath);
+          const newPath =
+            this.rewritePath?.({absolutePath, relativePath}) ?? absolutePath;
+
+          return [newPath, {...data, path: newPath}];
+        }),
+      ),
     );
 
     const context = createContext({
@@ -92,11 +111,11 @@ export class CoverageReporter implements Reporter {
       dir: path.resolve(this.config.rootDir, this.resultDir),
       watermarks: this.watermarks,
 
-      sourceFinder(file) {
+      sourceFinder: path => {
         try {
-          return readFileSync(path.resolve(sourceRoot, file), 'utf8');
+          return readFileSync(path, 'utf8');
         } catch (e) {
-          throw new Error(`Failed to read ${file}: ${e}`);
+          throw new Error(`Failed to read ${path}: ${e}`);
         }
       },
     });
