@@ -11,7 +11,7 @@
     "README.md"
   ],
   "scripts": {
-    "prepack": "rm -r lib && tsc"
+    "prepack": "rm -fr lib && tsc"
   },
   "packageManager": "yarn@3.0.2",
   "devDependencies": {
