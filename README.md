@@ -82,7 +82,7 @@ Upon completion of all tests, the reporter combines the generated coverage files
 
 This means the reporter is looking in the wrong place because playwright and the server process are using paths relative to a different working folder.
 
-Try setting the `sourceRoot` folder. If you need more control over the actual path of the files, pass a `rewritePaths` property in the options:
+Try setting the `sourceRoot` folder. If you need more control over the actual path of the files, pass a `rewritePath` property in the options:
 
 ```ts
 {
@@ -100,7 +100,7 @@ Try setting the `sourceRoot` folder. If you need more control over the actual pa
    * Return the rewritten path. If nothing is returned, `absolutePath`
    * is used instead.
    */
-  rewritePaths: ({absolutePath, relativePath}) => {
+  rewritePath: ({absolutePath, relativePath}) => {
     return absolutePath;
   },
 }
