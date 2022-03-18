@@ -5,6 +5,11 @@
   "author": "Bram Gotink <bram@gotink@me>",
   "license": "MIT",
   "description": "Track coverage in playwright tests using v8, without instrumentation",
+  "homepage": "https://github.com/bgotink/playwright-coverage",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bgotink/playwright-coverage.git"
+  },
   "keywords": [
     "playwright",
     "coverage"
