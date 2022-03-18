@@ -1,6 +1,6 @@
 # `@bgotink/playwright-coverage` [![Latest published version on NPM](https://img.shields.io/npm/v/@bgotink/playwright-coverage)](https://npm.im/@bgotink/playwright-coverage)
 
-Report coverage on playwright tests
+Report coverage on playwright tests using v8 coverage, without requiring any instrumentation.
 
 ## Usage
 
@@ -20,7 +20,7 @@ const config = {
     ['list'],
     [
       '@bgotink/playwright-coverage',
-      {
+      /** @type {import('@bgotink/playwright-coverage').CoverageReporterOptions} */ {
         // Path to the root files should be resolved from, most likely your repository root
         sourceRoot: __dirname,
         // Files to ignore in coverage, useful
@@ -28,7 +28,7 @@ const config = {
         // - or part of the code is generated
         // - or if you're running into any of the other many reasons people have for excluding files
         exclude: ['path/to/ignored/code/**'],
-        // Base directory where output will be written to
+        // Directory in which to write coverage reports
         resultDir: path.join(__dirname, 'results/e2e-coverage'),
         // Configure the reports to generate.
         // The value is an array of istanbul reports, with optional configuration attached.
@@ -79,9 +79,9 @@ Now replace all usage of `test` with the function export defined there, and cove
 
 ## How does it work?
 
-This uses V8's builtin coverage tracking. The fixtures registered via `mixinFixtures` hook into the created `Page` object and tracks javascript coverage. After the test is complete, this coverage is stored as attachment to the test execution.
+The fixtures registered in `test` or via `mixinFixtures` hook into created [`Page`s](https://playwright.dev/docs/api/class-page) to track javascript coverage with v8. The coverage data is added as attachment to every test.
 
-Upon completion of all tests, the reporter combines the generated coverage files into one and then converts the v8 coverage format into the format used by istanbul. This is then passed into the reports of `istanbul-reports`.
+Upon completion of all tests, the reporter merges all generated coverage files into one and then converts the v8 coverage format into the coverage format used by istanbul. The istanbul data is then passed into the reports of `istanbul-reports`.
 
 ## Common issues
 
