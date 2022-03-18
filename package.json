@@ -14,6 +14,9 @@
     "prepack": "rm -fr lib && tsc"
   },
   "packageManager": "yarn@3.0.2",
+  "peerDependencies": {
+    "@playwright/test": "^1.14.1"
+  },
   "devDependencies": {
     "@playwright/test": "^1.14.1",
     "@types/istanbul-lib-coverage": "^2.0.3",

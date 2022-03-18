@@ -607,6 +607,8 @@ __metadata:
     source-map: ^0.7.3
     typescript: ^4.4.3
     v8-to-istanbul: ^8.0.0
+  peerDependencies:
+    "@playwright/test": ^1.14.1
   languageName: unknown
   linkType: soft
 
