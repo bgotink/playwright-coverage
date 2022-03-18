@@ -58,17 +58,24 @@ const config = {
 };
 ```
 
-Finally mix in coverage to your `test` function:
+Now replace all calls to `@playwright/test`'s `test` variable with a variant that tracks coverage.
+The easiest way to do this is by importing `test` from `@bgotink/playwright-coverage` instead.
+
+```diff
+-import {expect, test} from '@playwright/test';
++import {expect, test} from '@bgotink/playwright-coverage';
+```
+
+If you're already using a different `test` function, e.g. if you're using [`@ngx-playwright/test`](https://github.com/bgotink/ngx-playwright), you can add coverage tracking using the `mixinFixtures` function:
 
 ```ts
-import {test as base} from '@playwright/test';
+import {test as base} from '@ngx-playwright/test'; // or wherever your test function comes from
 import {mixinFixtures as mixinCoverage} from '@bgotink/playwright-coverage';
 
-export * from '@playwright/test';
 export const test = mixinCoverage(base);
 ```
 
-Now replace imports to `@playwright/test` in your tests with imports from this file, and coverage will be tracked.
+Now replace all usage of `test` with the function export defined there, and coverage will be tracked.
 
 ## How does it work?
 
