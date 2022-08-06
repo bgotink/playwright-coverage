@@ -47,7 +47,17 @@ export async function getSourceMap(
   const match = source.match(/\/\/# *sourceMappingURL=(.*)$/);
 
   if (match == null) {
-    return undefined;
+    try {
+      const response = await (
+        await fetch
+      ).default(`${url}.map`, {
+        method: 'GET',
+      });
+
+      return (await response.json()) as RawSourceMap;
+    } catch {
+      return undefined;
+    }
   }
 
   const resolved = new URL(match[1]!, url);
