@@ -62,35 +62,39 @@ export async function getSourceMap(
 
   const resolved = new URL(match[1]!, url);
 
-  switch (resolved.protocol) {
-    case 'file:':
-      return JSON.parse(await fs.readFile(resolved, 'utf8'));
-    case 'data:': {
-      if (!/^application\/json[,;]/.test(resolved.pathname)) {
-        return undefined;
+  try {
+    switch (resolved.protocol) {
+      case 'file:':
+        return JSON.parse(await fs.readFile(resolved, 'utf8'));
+      case 'data:': {
+        if (!/^application\/json[,;]/.test(resolved.pathname)) {
+          return undefined;
+        }
+
+        const comma = resolved.pathname.indexOf(',');
+        const rawData = resolved.pathname.slice(comma + 1);
+        const between = resolved.pathname
+          .slice('application/json;'.length, comma)
+          .split(';');
+
+        const dataString = between.includes('base64')
+          ? Buffer.from(rawData, 'base64url').toString('utf8')
+          : rawData;
+
+        return JSON.parse(dataString);
       }
+      default: {
+        const response = await (
+          await fetch
+        ).default(resolved.href, {
+          method: 'GET',
+        });
 
-      const comma = resolved.pathname.indexOf(',');
-      const rawData = resolved.pathname.slice(comma + 1);
-      const between = resolved.pathname
-        .slice('application/json;'.length, comma)
-        .split(';');
-
-      const dataString = between.includes('base64')
-        ? Buffer.from(rawData, 'base64url').toString('utf8')
-        : rawData;
-
-      return JSON.parse(dataString);
+        return (await response.json()) as RawSourceMap;
+      }
     }
-    default: {
-      const response = await (
-        await fetch
-      ).default(resolved.href, {
-        method: 'GET',
-      });
-
-      return (await response.json()) as RawSourceMap;
-    }
+  } catch {
+    return undefined;
   }
 }
 
