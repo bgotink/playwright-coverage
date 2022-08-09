@@ -83,13 +83,17 @@ export async function getSourceMap(
       return JSON.parse(dataString);
     }
     default: {
-      const response = await (
-        await fetch
-      ).default(resolved.href, {
-        method: 'GET',
-      });
+      try {
+        const response = await (
+          await fetch
+        ).default(resolved.href, {
+          method: 'GET',
+        });
 
-      return (await response.json()) as RawSourceMap;
+        return (await response.json()) as RawSourceMap;
+      } catch {
+        return undefined;
+      }
     }
   }
 }
