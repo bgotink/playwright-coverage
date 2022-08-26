@@ -44,7 +44,7 @@ export async function getSourceMap(
   url: string,
   source: string,
 ): Promise<RawSourceMap | undefined> {
-  const match = source.match(/\/\/# *sourceMappingURL=(.*)$/);
+  const match = source.match(/\/\/# *sourceMappingURL=(.*)/);
 
   if (match == null) {
     try {
@@ -139,7 +139,7 @@ export async function convertToIstanbulCoverage(
       }
 
       let relativePath;
-      if (url.protocol === 'webpack:') {
+      if (url.protocol.startsWith('webpack')) {
         relativePath = url.pathname.slice(1); // webpack: URLs contain relative paths
       } else {
         relativePath = url.pathname;
