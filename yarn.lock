@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 4
+  version: 6
   cacheKey: 8
 
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.14.5":
@@ -21,7 +21,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.15.5, @babel/core@npm:^7.14.8":
+"@babel/core@npm:^7.14.8":
   version: 7.15.5
   resolution: "@babel/core@npm:7.15.5"
   dependencies:
@@ -590,6 +590,7 @@ __metadata:
   resolution: "@bgotink/playwright-coverage@workspace:."
   dependencies:
     "@bcoe/v8-coverage": ^0.2.3
+    "@jridgewell/trace-mapping": ^0.3.17
     "@playwright/test": ^1.14.1
     "@types/istanbul-lib-coverage": ^2.0.3
     "@types/istanbul-lib-report": ^3.0.0
@@ -604,9 +605,8 @@ __metadata:
     micromatch: ^4.0.4
     node-fetch: ^3.2.0
     prettier: ^2.4.1
-    source-map: ^0.7.3
     typescript: ^4.4.3
-    v8-to-istanbul: ^8.0.0
+    v8-to-istanbul: ^9.1.0
   peerDependencies:
     "@playwright/test": ^1.14.1
   languageName: unknown
@@ -622,6 +622,30 @@ __metadata:
     "@types/yargs": ^15.0.0
     chalk: ^4.0.0
   checksum: a0bd3d2f22f26ddb23f41fddf6e6a30bf4fab2ce79ec1cb6ce6fdfaf90a72e00f4c71da91ec61e13db3b10c41de22cf49d07c57ff2b59171d64b29f909c1d8d6
+  languageName: node
+  linkType: hard
+
+"@jridgewell/resolve-uri@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@jridgewell/resolve-uri@npm:3.1.0"
+  checksum: b5ceaaf9a110fcb2780d1d8f8d4a0bfd216702f31c988d8042e5f8fbe353c55d9b0f55a1733afdc64806f8e79c485d2464680ac48a0d9fcadb9548ee6b81d267
+  languageName: node
+  linkType: hard
+
+"@jridgewell/sourcemap-codec@npm:1.4.14":
+  version: 1.4.14
+  resolution: "@jridgewell/sourcemap-codec@npm:1.4.14"
+  checksum: 61100637b6d173d3ba786a5dff019e1a74b1f394f323c1fee337ff390239f053b87266c7a948777f4b1ee68c01a8ad0ab61e5ff4abb5a012a0b091bec391ab97
+  languageName: node
+  linkType: hard
+
+"@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.17":
+  version: 0.3.17
+  resolution: "@jridgewell/trace-mapping@npm:0.3.17"
+  dependencies:
+    "@jridgewell/resolve-uri": 3.1.0
+    "@jridgewell/sourcemap-codec": 1.4.14
+  checksum: 9d703b859cff5cd83b7308fd457a431387db5db96bd781a63bf48e183418dd9d3d44e76b9e4ae13237f6abeeb25d739ec9215c1d5bfdd08f66f750a50074a339
   languageName: node
   linkType: hard
 
@@ -1329,7 +1353,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-matcher-utils@npm:^26.6.2":
+"jest-matcher-utils@npm:^26.4.2, jest-matcher-utils@npm:^26.6.2":
   version: 26.6.2
   resolution: "jest-matcher-utils@npm:26.6.2"
   dependencies:
@@ -1715,13 +1739,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "source-map@npm:0.7.3"
-  checksum: cd24efb3b8fa69b64bf28e3c1b1a500de77e84260c5b7f2b873f88284df17974157cc88d386ee9b6d081f08fdd8242f3fc05c953685a6ad81aad94c7393dedea
-  languageName: node
-  linkType: hard
-
 "stack-utils@npm:^2.0.2, stack-utils@npm:^2.0.3":
   version: 2.0.5
   resolution: "stack-utils@npm:2.0.5"
@@ -1777,22 +1794,22 @@ typescript@^4.4.3:
 
 "typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>":
   version: 4.4.3
-  resolution: "typescript@patch:typescript@npm%3A4.4.3#~builtin<compat/typescript>::version=4.4.3&hash=32657b"
+  resolution: "typescript@patch:typescript@npm%3A4.4.3#~builtin<compat/typescript>::version=4.4.3&hash=bbeadb"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 28ab98313afab46788ff41014fdb5932430ada6e03cf9e92ac47f406526a2cac1ae2894834e7da61e46b7429318e9c47f45ba8de323332f0cb9af99b72ebae74
+  checksum: 33a916819907e819430802c50405f18c187448d678696a81545f494a7ec16207f8c15340c945df62109bd1d951091a9f15f3d2eb931a3c889f962c8509017697
   languageName: node
   linkType: hard
 
-"v8-to-istanbul@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "v8-to-istanbul@npm:8.0.0"
+"v8-to-istanbul@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "v8-to-istanbul@npm:9.1.0"
   dependencies:
+    "@jridgewell/trace-mapping": ^0.3.12
     "@types/istanbul-lib-coverage": ^2.0.1
     convert-source-map: ^1.6.0
-    source-map: ^0.7.3
-  checksum: 3e8be80b9967a18c2196b016b29a956ffddb8fd2f2abe5ae126a616209c2ed7ba3172a9630715b375c50f88dd1dea3c97ba3e2ebfaee902dc4cc6a177f31a039
+  checksum: 2069d59ee46cf8d83b4adfd8a5c1a90834caffa9f675e4360f1157ffc8578ef0f763c8f32d128334424159bb6b01f3876acd39cd13297b2769405a9da241f8d1
   languageName: node
   linkType: hard
 
