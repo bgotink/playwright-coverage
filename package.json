@@ -23,7 +23,7 @@
   "scripts": {
     "prepack": "rm -fr lib && tsc"
   },
-  "packageManager": "yarn@3.0.2",
+  "packageManager": "yarn@3.5.0",
   "peerDependencies": {
     "@playwright/test": "^1.14.1"
   },
