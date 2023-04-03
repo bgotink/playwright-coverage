@@ -1,10 +1,10 @@
 import type {ProcessCov} from '@bcoe/v8-coverage';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import type {Suite, TestResult} from '@playwright/test/reporter';
 import {promises as fs} from 'fs';
 import {createCoverageMap} from 'istanbul-lib-coverage';
 import {isMatch} from 'micromatch';
 import {posix} from 'path';
-import type {RawSourceMap} from 'source-map';
 import {pathToFileURL, URL} from 'url';
 import v8ToIstanbul from 'v8-to-istanbul';
 
@@ -43,7 +43,7 @@ const fetch = eval('import("node-fetch")') as Promise<
 export async function getSourceMap(
   url: string,
   source: string,
-): Promise<RawSourceMap | undefined> {
+): Promise<EncodedSourceMap | undefined> {
   const match = source.match(/\/\/# *sourceMappingURL=(.*)/);
 
   if (match == null) {
@@ -54,7 +54,7 @@ export async function getSourceMap(
         method: 'GET',
       });
 
-      return (await response.json()) as RawSourceMap;
+      return (await response.json()) as EncodedSourceMap;
     } catch {
       return undefined;
     }
@@ -90,7 +90,7 @@ export async function getSourceMap(
           method: 'GET',
         });
 
-        return (await response.json()) as RawSourceMap;
+        return (await response.json()) as EncodedSourceMap;
       }
     }
   } catch {
@@ -100,8 +100,8 @@ export async function getSourceMap(
 
 export async function getSourceMaps(
   sources: ReadonlyMap<string, string>,
-): Promise<ReadonlyMap<string, RawSourceMap | undefined>> {
-  return new Map<string, RawSourceMap | undefined>(
+): Promise<ReadonlyMap<string, EncodedSourceMap | undefined>> {
+  return new Map<string, EncodedSourceMap | undefined>(
     await Promise.all(
       Array.from(
         sources,
@@ -115,7 +115,7 @@ export async function getSourceMaps(
 export async function convertToIstanbulCoverage(
   v8Coverage: ProcessCov,
   sources: ReadonlyMap<string, string>,
-  sourceMaps: ReadonlyMap<string, RawSourceMap | undefined>,
+  sourceMaps: ReadonlyMap<string, EncodedSourceMap | undefined>,
   exclude: readonly string[],
   sourceRoot: string,
 ) {

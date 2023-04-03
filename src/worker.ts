@@ -1,9 +1,9 @@
 import {mergeProcessCovs, ProcessCov, ScriptCov} from '@bcoe/v8-coverage';
+import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
 import {parentPort} from 'worker_threads';
 import {expose} from 'comlink';
 import nodeEndpoint from 'comlink/dist/umd/node-adapter';
 import {promises as fs} from 'fs';
-import type {RawSourceMap} from 'source-map';
 import {convertToIstanbulCoverage, getSourceMap} from './data';
 
 if (parentPort == null) {
@@ -17,7 +17,7 @@ class CoverageWorker {
   #queue: string[] = [];
 
   #sources = new Map<string, string>();
-  #sourceMaps = new Map<string, Promise<RawSourceMap | undefined>>();
+  #sourceMaps = new Map<string, Promise<EncodedSourceMap | undefined>>();
 
   #totalCoverage: ProcessCov = {result: []};
 
