@@ -22,8 +22,8 @@ const coverageFixtures: Fixtures<
 > = {
   collectCoverage: true,
 
-  page: async ({page, collectCoverage}, use, testInfo) => {
-    if (page.coverage == null || !collectCoverage) {
+  page: async ({page, collectCoverage, browserName}, use, testInfo) => {
+    if (browserName !== 'chromium' || !collectCoverage) {
       return use(page);
     }
 
