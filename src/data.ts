@@ -193,7 +193,11 @@ export async function convertToIstanbulCoverage(
       },
     );
 
-    await convertor.load();
+    try {
+      await convertor.load();
+    } catch (error) {
+      continue;
+    }
 
     convertor.applyCoverage(script.functions);
 
