@@ -44,7 +44,7 @@ export async function getSourceMap(
   url: string,
   source: string,
 ): Promise<EncodedSourceMap | undefined> {
-  const match = source.match(/\/\/# *sourceMappingURL=(.*)/);
+  const match = source.match(/\s\/\/# *sourceMappingURL=(.*)/);
 
   if (match == null) {
     try {
