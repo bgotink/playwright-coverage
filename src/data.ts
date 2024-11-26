@@ -7,6 +7,7 @@ import {isMatch} from 'micromatch';
 import {join, posix} from 'path';
 import {pathToFileURL, URL} from 'url';
 import v8ToIstanbul from 'v8-to-istanbul';
+import * as convertSourceMap from 'convert-source-map';
 
 export const attachmentName = '@bgotink/playwright-coverage';
 
@@ -44,55 +45,62 @@ export async function getSourceMap(
   url: string,
   source: string,
 ): Promise<EncodedSourceMap | undefined> {
-  const match = source.match(/\/\/# *sourceMappingURL=(.*)/);
-
-  if (match == null) {
-    try {
-      const response = await (
-        await fetch
-      ).default(`${url}.map`, {
-        method: 'GET',
-      });
-
-      return (await response.json()) as EncodedSourceMap;
-    } catch {
-      return undefined;
-    }
+  const inlineMap = convertSourceMap.fromSource(source);
+  if (inlineMap != null) {
+    return inlineMap.sourcemap;
   }
 
-  const resolved = new URL(match[1]!, url);
-
   try {
-    switch (resolved.protocol) {
-      case 'file:':
-        return JSON.parse(await fs.readFile(resolved, 'utf8'));
-      case 'data:': {
-        if (!/^application\/json[,;]/.test(resolved.pathname)) {
-          return undefined;
+    const linkedMap = await convertSourceMap.fromMapFileSource(
+      source,
+      async (file: string): Promise<string> => {
+        const resolved = new URL(file, url);
+
+        switch (resolved.protocol) {
+          case 'file:':
+            return await fs.readFile(resolved, 'utf8');
+          case 'data:': {
+            const comma = resolved.pathname.indexOf(',');
+            const rawData = resolved.pathname.slice(comma + 1);
+            const between = resolved.pathname
+              .slice('application/json;'.length, comma)
+              .split(';');
+
+            const dataString = between.includes('base64')
+              ? Buffer.from(rawData, 'base64url').toString('utf8')
+              : rawData;
+
+            return dataString;
+          }
+          default: {
+            const response = await (
+              await fetch
+            ).default(resolved.href, {
+              method: 'GET',
+            });
+
+            return await response.text();
+          }
         }
+      },
+    );
 
-        const comma = resolved.pathname.indexOf(',');
-        const rawData = resolved.pathname.slice(comma + 1);
-        const between = resolved.pathname
-          .slice('application/json;'.length, comma)
-          .split(';');
-
-        const dataString = between.includes('base64')
-          ? Buffer.from(rawData, 'base64url').toString('utf8')
-          : rawData;
-
-        return JSON.parse(dataString);
-      }
-      default: {
-        const response = await (
-          await fetch
-        ).default(resolved.href, {
-          method: 'GET',
-        });
-
-        return (await response.json()) as EncodedSourceMap;
-      }
+    if (linkedMap != null) {
+      return linkedMap.sourcemap;
     }
+  } catch {
+    return null!;
+  }
+
+  // No source map comments, try to find an implicit sourcemap at `${url}.map`
+  try {
+    const response = await (
+      await fetch
+    ).default(`${url}.map`, {
+      method: 'GET',
+    });
+
+    return (await response.json()) as EncodedSourceMap;
   } catch {
     return undefined;
   }
@@ -163,10 +171,16 @@ export async function convertToIstanbulCoverage(
       // This path is used to resolve files, but the filename doesn't matter
       join(sourceRoot, 'unused.js'),
       0,
-      {
-        source,
-        sourceMap: {sourcemap: sourceMap},
-      },
+      sourceMap?.mappings
+        ? {
+            source,
+            sourceMap: {sourcemap: sourceMap},
+          }
+        : {
+            source: convertSourceMap.removeMapFileComments(
+              convertSourceMap.removeComments(source),
+            ),
+          },
       path => {
         let isExcluded = isExcludedCache.get(path);
 

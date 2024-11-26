@@ -31,6 +31,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@bcoe/v8-coverage", "npm:0.2.3"],\
             ["@jridgewell/trace-mapping", "npm:0.3.17"],\
             ["@playwright/test", "npm:1.14.1"],\
+            ["@types/convert-source-map", "npm:2.0.3"],\
             ["@types/istanbul-lib-coverage", "npm:2.0.3"],\
             ["@types/istanbul-lib-report", "npm:3.0.0"],\
             ["@types/istanbul-reports", "npm:3.0.1"],\
@@ -38,6 +39,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:16.9.3"],\
             ["@types/node-fetch", "npm:2.5.12"],\
             ["comlink", "npm:4.4.2"],\
+            ["convert-source-map", "npm:2.0.0"],\
             ["istanbul-lib-coverage", "npm:3.2.2"],\
             ["istanbul-lib-report", "npm:3.0.1"],\
             ["istanbul-reports", "npm:3.1.7"],\
@@ -981,6 +983,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@bcoe/v8-coverage", "npm:0.2.3"],\
             ["@jridgewell/trace-mapping", "npm:0.3.17"],\
             ["@playwright/test", "npm:1.14.1"],\
+            ["@types/convert-source-map", "npm:2.0.3"],\
             ["@types/istanbul-lib-coverage", "npm:2.0.3"],\
             ["@types/istanbul-lib-report", "npm:3.0.0"],\
             ["@types/istanbul-reports", "npm:3.0.1"],\
@@ -988,6 +991,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:16.9.3"],\
             ["@types/node-fetch", "npm:2.5.12"],\
             ["comlink", "npm:4.4.2"],\
+            ["convert-source-map", "npm:2.0.0"],\
             ["istanbul-lib-coverage", "npm:3.2.2"],\
             ["istanbul-lib-report", "npm:3.0.1"],\
             ["istanbul-reports", "npm:3.1.7"],\
@@ -1096,6 +1100,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "../../.yarn/berry/cache/@types-braces-npm-3.0.1-0c7465c9fb-8.zip/node_modules/@types/braces/",\
           "packageDependencies": [\
             ["@types/braces", "npm:3.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/convert-source-map", [\
+        ["npm:2.0.3", {\
+          "packageLocation": "../../.yarn/berry/cache/@types-convert-source-map-npm-2.0.3-336744949d-8.zip/node_modules/@types/convert-source-map/",\
+          "packageDependencies": [\
+            ["@types/convert-source-map", "npm:2.0.3"]\
           ],\
           "linkType": "HARD"\
         }]\

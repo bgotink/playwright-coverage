@@ -592,6 +592,7 @@ __metadata:
     "@bcoe/v8-coverage": ^0.2.3
     "@jridgewell/trace-mapping": ^0.3.17
     "@playwright/test": ^1.14.1
+    "@types/convert-source-map": ^2.0.3
     "@types/istanbul-lib-coverage": ^2.0.3
     "@types/istanbul-lib-report": ^3.0.0
     "@types/istanbul-reports": ^3.0.1
@@ -599,6 +600,7 @@ __metadata:
     "@types/node": ^16.9.3
     "@types/node-fetch": ^2
     comlink: ^4.4.2
+    convert-source-map: ^2.0.0
     istanbul-lib-coverage: ^3.2.2
     istanbul-lib-report: ^3.0.1
     istanbul-reports: ^3.1.7
@@ -701,6 +703,13 @@ __metadata:
   version: 3.0.1
   resolution: "@types/braces@npm:3.0.1"
   checksum: 3749f7673a03d498ddb2f199b222bb403e53e78ac05a599c757c2049703ece802602c78640af0ff826be0fd2ea8b03daff04ce18806ed739592302195b7a569b
+  languageName: node
+  linkType: hard
+
+"@types/convert-source-map@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@types/convert-source-map@npm:2.0.3"
+  checksum: 411cf9a02cf5dbe204e325dd5ebf50de00b58b38d1d2a3064c6ea28417c23bae956206eaa9ed3a75a994909b4ab3f9c6389073d0636a62500fa6d6333c64d45a
   languageName: node
   linkType: hard
 
