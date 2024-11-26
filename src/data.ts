@@ -4,7 +4,7 @@ import type {Suite, TestResult} from '@playwright/test/reporter';
 import {promises as fs} from 'fs';
 import {createCoverageMap} from 'istanbul-lib-coverage';
 import {isMatch} from 'micromatch';
-import {posix} from 'path';
+import {join, posix} from 'path';
 import {pathToFileURL, URL} from 'url';
 import v8ToIstanbul from 'v8-to-istanbul';
 
@@ -160,7 +160,8 @@ export async function convertToIstanbulCoverage(
 
     const isExcludedCache = new Map<string, boolean>();
     const convertor = v8ToIstanbul(
-      '',
+      // This path is used to resolve files, but the filename doesn't matter
+      join(sourceRoot, 'unused.js'),
       0,
       {
         source,
