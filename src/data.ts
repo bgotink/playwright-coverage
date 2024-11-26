@@ -125,7 +125,7 @@ export async function convertToIstanbulCoverage(
     const source = sources.get(script.url);
     const sourceMap = sourceMaps.get(script.url);
 
-    if (source == null || sourceMap == null) {
+    if (source == null || !sourceMap?.mappings) {
       continue;
     }
 
