@@ -41,12 +41,12 @@
   },
   "dependencies": {
     "@bcoe/v8-coverage": "^0.2.3",
-    "comlink": "^4.3.1",
-    "istanbul-lib-coverage": "^3.0.0",
-    "istanbul-lib-report": "^3.0.0",
-    "istanbul-reports": "^3.0.2",
-    "micromatch": "^4.0.4",
+    "comlink": "^4.4.2",
+    "istanbul-lib-coverage": "^3.2.2",
+    "istanbul-lib-report": "^3.0.1",
+    "istanbul-reports": "^3.1.7",
+    "micromatch": "^4.0.8",
     "node-fetch": "^3.2.0",
-    "v8-to-istanbul": "^9.1.0"
+    "v8-to-istanbul": "^9.3.0"
   }
 }
