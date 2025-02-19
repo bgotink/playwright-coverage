@@ -1,6 +1,5 @@
 import type {ProcessCov} from '@bcoe/v8-coverage';
 import type {EncodedSourceMap} from '@jridgewell/trace-mapping';
-import type {Suite, TestResult} from '@playwright/test/reporter';
 import {promises as fs} from 'fs';
 import {createCoverageMap} from 'istanbul-lib-coverage';
 import {isMatch} from 'micromatch';
@@ -11,33 +10,7 @@ import * as convertSourceMap from 'convert-source-map';
 
 export const attachmentName = '@bgotink/playwright-coverage';
 
-export function collectV8CoverageFiles(suite: Suite) {
-  const files = new Set<string>();
-
-  for (const test of suite.allTests()) {
-    for (const result of test.results) {
-      const attachmentIndex = result.attachments.findIndex(
-        ({name}) => name === attachmentName,
-      );
-
-      if (attachmentIndex === -1) {
-        continue;
-      }
-
-      const [attachment] = result.attachments.splice(attachmentIndex, 1) as [
-        TestResult['attachments'][number],
-      ];
-
-      if (attachment.path != null) {
-        files.add(attachment.path);
-      }
-    }
-  }
-
-  return files;
-}
-
-const fetch = import("node-fetch");
+const fetch = import('node-fetch');
 
 export async function getSourceMap(
   url: string,

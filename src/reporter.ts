@@ -2,7 +2,9 @@ import type {
   FullConfig,
   FullResult,
   Reporter,
+  TestCase,
   TestResult,
+  TestStep,
 } from '@playwright/test/reporter';
 import {Remote, wrap} from 'comlink';
 import nodeEndpoint from 'comlink/dist/umd/node-adapter';
@@ -100,6 +102,15 @@ export class CoverageReporter implements Reporter {
     this.config = config;
 
     void this.worker.reset();
+  }
+
+  onStepEnd(_test: TestCase, _result: TestResult, step: TestStep): void {
+    // Check for existence of the attachments property added in 1.50 to keep backwards compatibility
+    if ('attachments' in step) {
+      step.attachments = step.attachments.filter(
+        ({name}) => name !== attachmentName,
+      );
+    }
   }
 
   onTestEnd(_: unknown, result: TestResult): void {
