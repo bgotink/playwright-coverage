@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "module": "commonjs",
+    "module": "Node16",
     "lib": ["es2020"],
     "types": ["node"],
     "declaration": true,
@@ -17,15 +17,13 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
 
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "esModuleInterop": true,
 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
 
     "resolveJsonModule": true,
-
-    "importsNotUsedAsValues": "error",
 
     "outDir": "lib",
     "rootDir": "src"

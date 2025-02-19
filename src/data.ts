@@ -37,9 +37,7 @@ export function collectV8CoverageFiles(suite: Suite) {
   return files;
 }
 
-const fetch = eval('import("node-fetch")') as Promise<
-  typeof import('node-fetch')
->;
+const fetch = import("node-fetch");
 
 export async function getSourceMap(
   url: string,

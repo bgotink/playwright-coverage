@@ -1,2 +1,5 @@
 /lib
 *.tgz
+
+node_modules
+.yarn
