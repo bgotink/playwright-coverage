@@ -1,6 +1,6 @@
 {
   "name": "@bgotink/playwright-coverage",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "lib/index.js",
   "author": "Bram Gotink <bram@gotink.me>",
   "license": "MIT",
