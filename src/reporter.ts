@@ -44,7 +44,7 @@ export interface CoverageReporterOptions {
    */
   reports?: (
     | ReportType
-    | [ReportType, ReportOptions[ReportType] | undefined]
+    | [ReportType, (ReportOptions[ReportType] | undefined)?]
   )[];
 
   /**
@@ -68,7 +68,7 @@ export class CoverageReporter implements Reporter {
   private readonly resultDir: string;
   private readonly reports: (
     | ReportType
-    | [ReportType, ReportOptions[ReportType] | undefined]
+    | [ReportType, ReportOptions[ReportType]?]
   )[];
   private readonly sourceRoot?: string;
   private readonly watermarks?: Partial<Watermarks>;
