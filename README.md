@@ -21,28 +21,28 @@ const config = {
     [
       '@bgotink/playwright-coverage',
       /** @type {import('@bgotink/playwright-coverage').CoverageReporterOptions} */ {
-        // Path to the root files should be resolved from, most likely your repository root
+        /* Path to the root files should be resolved from, most likely your repository root */
         sourceRoot: __dirname,
-        // Files to ignore in coverage, useful
-        // - if you're testing the demo app of a component library and want to exclude the demo sources
-        // - or part of the code is generated
-        // - or if you're running into any of the other many reasons people have for excluding files
+        /* Files to ignore in coverage, useful
+           - if you're testing the demo app of a component library and want to exclude the demo sources
+           - or part of the code is generated
+           - or if you're running into any of the other many reasons people have for excluding files */
         exclude: ['path/to/ignored/code/**'],
-        // Directory in which to write coverage reports
+        /* Directory in which to write coverage reports */
         resultDir: path.join(__dirname, 'results/e2e-coverage'),
-        // Configure the reports to generate.
-        // The value is an array of istanbul reports, with optional configuration attached.
+        /* Configure the reports to generate.
+           The value is an array of istanbul reports, with optional configuration attached. */
         reports: [
-          // Create an HTML view at <resultDir>/index.html
+          /* Create an HTML view at <resultDir>/index.html */
           ['html'],
-          // Create <resultDir>/coverage.lcov for consumption by tooling
+          /* Create <resultDir>/coverage.lcov for consumption by tooling */
           [
             'lcovonly',
             {
               file: 'coverage.lcov',
             },
           ],
-          // Log a coverage summary at the end of the test run
+          /* Log a coverage summary at the end of the test run */
           [
             'text-summary',
             {
@@ -50,7 +50,7 @@ const config = {
             },
           ],
         ],
-        // Configure watermarks, see https://github.com/istanbuljs/nyc#high-and-low-watermarks
+        /* Configure watermarks, see https://github.com/istanbuljs/nyc#high-and-low-watermarks */
         // watermarks: {},
       },
     ],
