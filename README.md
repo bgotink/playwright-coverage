@@ -78,6 +78,19 @@ import {mixinFixtures as mixinCoverage} from '@bgotink/playwright-coverage';
 export const test = mixinCoverage(base);
 ```
 
+or you can use `mergeTests` if you're using playwright ≥ 1.40.0:
+
+```ts
+import {mergeTests} from '@playwright/test';
+import {test as testWithCoverage} from '@bgotink/playwright/coverage';
+import {test as otherTest} from '@ngx-playwright/test'; // or wherever your test function comes from
+
+export const test = mergeTests(
+  testWithCoverage,
+  otherTest,
+);
+```
+
 Now replace all usage of `test` with the function export defined there, and coverage will be tracked.
 
 ## How does it work?
