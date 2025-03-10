@@ -20,7 +20,7 @@ const coverageFixtures: Fixtures<
   PlaywrightTestArgs & PlaywrightTestOptions,
   PlaywrightWorkerArgs & PlaywrightWorkerOptions
 > = {
-  collectCoverage: true,
+  collectCoverage: [true, { option: true } ],
 
   page: async ({page, collectCoverage, browserName}, use, testInfo) => {
     if (browserName !== 'chromium' || !collectCoverage) {
