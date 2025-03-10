@@ -13,14 +13,17 @@ yarn add -D @bgotink/playwright-coverage
 Then add the reporter to your playwright configuration:
 
 ```ts
-const config = {
+import {defineCoverageReporterConfig} from '@bgotink/playwright-coverage';
+import {defineConfig} from '@playwright/test';
+
+export default defineConfig({
   // ...
 
   reporter: [
     ['list'],
     [
       '@bgotink/playwright-coverage',
-      /** @type {import('@bgotink/playwright-coverage').CoverageReporterOptions} */ {
+      defineCoverageReporterConfig({
         /* Path to the root files should be resolved from, most likely your repository root */
         sourceRoot: __dirname,
         /* Files to ignore in coverage, useful
@@ -52,10 +55,10 @@ const config = {
         ],
         /* Configure watermarks, see https://github.com/istanbuljs/nyc#high-and-low-watermarks */
         // watermarks: {},
-      },
+      }),
     ],
   ],
-};
+});
 ```
 
 Now replace all calls to `@playwright/test`'s `test` variable with a variant that tracks coverage.
